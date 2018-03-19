@@ -1,0 +1,5 @@
+http://webglfactory.blogspot.com/2011/05/how-to-convert-world-to-screen.html
+
+https://cis700-procedural-graphics.github.io/files/dynamics_2_28_17.pdf
+
+http://www.typescriptgames.com/MouseInput.html
