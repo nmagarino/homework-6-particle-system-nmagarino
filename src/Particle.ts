@@ -36,6 +36,14 @@ export class Particle {
     changeAcc(newAcc : vec3) {
         this.acc = newAcc;
     }
+
+    changeVel(newVel : vec3) {
+        this.vel = newVel;
+    }
+
+    changePos(newPos : vec3) {
+        this.pos = newPos;
+    }
 }
 
 export default Particle;
