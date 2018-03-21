@@ -1,6 +1,7 @@
 
 
 
+
 ## READ-ME
 Pennkey: nmaga
 
@@ -12,6 +13,7 @@ Resources:
 * "http://antongerdelan.net/opengl/raycasting.html" For reference in ray casting
 
 The controls for the particle simulation start as such:
+
 ![](controls.PNG)
 
 My simulation starts with a 2d grid of 120x120 pixels.  If we switch on disperse, the particles will be given a random acceleration and eventually travel away from their original positions.  These random accelerations are given at each tick, so particles may appear to rapidly change direction.
