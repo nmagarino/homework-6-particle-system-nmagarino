@@ -27,7 +27,6 @@ export class Particle {
         vec3.add(this.pos, this.pos, (vec3.scale(tempVel, tempVel, deltaTime)));
         vec3.add(this.vel, this.vel, (vec3.scale(tempAcc, tempAcc, deltaTime)));
 
-        //this.col[0] = this.col[0] * (vec3.length(this.pos)* (9000000000000000000000));
         this.col[0] = vec3.length(this.pos) / 150;
         vec4.normalize(this.col, this.col);
 

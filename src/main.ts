@@ -20,7 +20,6 @@ const controls = {
   bringToPoint : false,
   oscillate : true,
   clickAttract : false,
-  'resetVelocities' : resetVelocities,
    'attractToMesh' : attractToMesh,
    mesh : 'wahoo',
    cameraControls : true,
@@ -31,10 +30,6 @@ let square: Square;
 let time: number = 0.0;
 let particlesArray: Particle[] = [];
 let n: number = controls.numParticles; // Determines number of particles!
-let disperse: boolean = false;
-let center : boolean = false;
-let oscillation : boolean = true;
-let pointAtrract : boolean = false;
 
 // Globally keeps track of mouse coordinates on screen
 let mouseX : number;
@@ -54,58 +49,13 @@ let cow : Mesh = new Mesh(document.getElementById('cow.obj').innerHTML, vec3.fro
 cow.create();
 
 let mesh : Mesh; // Just sets up positions for use here
-//console.log(mesh.positions);
-//console.log(mesh.positions.length / 4);
 
 // Point that particles will converge to / repel from
 let attractionPoint : vec3 = vec3.fromValues(0,0,0);
 
 // Converts 2d mouse screen position to a 3d world space position
 function screenToWorldPoint() {
-  /*
-  let x : number = (2.0 * mouseX) / window.innerWidth - 1;
-  let y : number = (- 2.0 * mouseY) / window.innerHeight + 1;
-
-  let viewProjInv : mat4 = mat4.create();
-  viewProjInv = mat4.multiply(viewProjInv, cam.projectionMatrix, cam.viewMatrix);
-  mat4.invert(viewProjInv, viewProjInv);
-
-  let point3d : vec3 = vec3.fromValues(x, y, 0);
-
-  let pointMat : mat4 = mat4.create();
-  mat4.fromTranslation(pointMat, point3d);
-
-  mat4.multiply(viewProjInv, viewProjInv, pointMat);
-  //let viewProjInv = mat4.invert()
-
   
-  let finalPoint : vec3 = vec3.create();
-  mat4.getTranslation(finalPoint, viewProjInv);
-  return finalPoint;//?
-  */
-
-  /*
-  let projMat : mat4 = cam.projectionMatrix;
-  let viewMat : mat4 = cam.viewMatrix;
-
-  let viewProjMat : mat4 = mat4.create();
-  mat4.multiply(viewProjMat, projMat, viewMat);
-  mat4.invert(viewProjMat, viewProjMat);
-
-  // z depth value????
-  let vec : vec4 = vec4.fromValues(mouseX, mouseY, 0, 1.0);
-
-  // * viewProjMat[0]
-
-  let newVec : vec4 = vec4.fromValues(vec[0] * viewProjMat[0] + vec[1] * viewProjMat[4] + vec[2] * viewProjMat[8] + vec[3] * viewProjMat[12],
-                                      vec[0] * viewProjMat[1] + vec[1] * viewProjMat[5] + vec[2] * viewProjMat[9] + vec[3] * viewProjMat[13],
-                                      vec[0] * viewProjMat[2] + vec[1] * viewProjMat[6] + vec[2] * viewProjMat[10] + vec[3] * viewProjMat[14],
-                                      vec[0] * viewProjMat[3] + vec[1] * viewProjMat[7] + vec[2] * viewProjMat[11] + vec[3] * viewProjMat[15]);
-
-  vec4.scale(newVec, newVec, newVec[3]);
-
-  */
-
   let rayOrig : vec3 = cam.position;
 
   let x : number = (2.0 * mouseX) / window.innerWidth - 1.0;
@@ -143,12 +93,8 @@ function screenToWorldPoint() {
 
   rayWorld[2] = cam.target[2];
 
-  
-
   console.log('Ray: ' + '(' + rayWorld[0] + ', ' + rayWorld[1] + ', ' + rayWorld[2] + ')');
 
-
-  //let point3d : vec3 = vec3.fromValues(0, 0, 0);
   if(!controls.clickAttract) {
     return vec3.create();
   }
@@ -156,11 +102,6 @@ function screenToWorldPoint() {
     return rayWorld;
 
   }
-
-
-  //let vecMat : mat4 = mat4.
-
-
 }
 
 // When the mouse is up, particles converge at origin
@@ -210,29 +151,6 @@ function attractToMesh() {
     // add an attractive force to particle pos
     count++;
     
-
-    
-    /*
-    
-    let attractVec : vec3 = vec3.create();
-    vec3.subtract(attractVec, currParticle.pos, meshPos);
-    vec3.scale(attractVec, attractVec, -1);
-    vec3.normalize(attractVec, attractVec);
-    vec3.scale(attractVec, attractVec, 1/100);
-
-   let epsilon : number = 3.0;
-   let diff : vec3 = vec3.create();
-   vec3.subtract(diff, currParticle.pos, meshPos);
-   let dist : number = vec3.length(diff);
-   if(dist < epsilon) {
-     // Halt particles
-    currParticle.vel = vec3.scale(currParticle.vel, currParticle.vel, 1/10);
-    currParticle.changeAcc(vec3.fromValues(Math.random() - .5, Math.random() - .5, Math.random() - .5));
-    vec3.scale(currParticle.acc, currParticle.acc, 1/100);
-    vec3.normalize(currParticle.acc, currParticle.acc);
-    
-   }
-   */
  }
 }
 
@@ -242,24 +160,6 @@ function resetVelocities() {
   }
 }
 
-function switchOscillate() {
-  oscillation = !oscillation; 
-}
-
-function switchPointAtrract() {
-  pointAtrract = !pointAtrract;
-}
-
-function switchDisperse() {
-  disperse = !disperse;
-  console.log(disperse);
-}
-
-function bringToCenter() {
-  center = !center;
-  console.log(center);
-}
-
 function loadScene() {
   particlesArray = [];
   n = controls.numParticles;
@@ -267,30 +167,8 @@ function loadScene() {
   square.create();
 
   // Set up particles here. Hard-coded example data for now
-  /*
-  let offsetsArray = [];
-  let colorsArray = [];
-  let n: number = 100.0;
-  for(let i = 0; i < n; i++) {
-    for(let j = 0; j < n; j++) {
-      offsetsArray.push(i);
-      offsetsArray.push(j);
-      offsetsArray.push(0);
+  // Start with grid
 
-      colorsArray.push(i / n);
-      colorsArray.push(j / n);
-      colorsArray.push(1.0);
-      colorsArray.push(1.0); // Alpha channel
-    }
-  }
-  let offsets: Float32Array = new Float32Array(offsetsArray);
-  let colors: Float32Array = new Float32Array(colorsArray);
-  square.setInstanceVBOs(offsets, colors);
-  square.setNumInstances(n * n); // 10x10 grid of "particles"
-  */
-  
-
-  
    for(let i = 0; i < n; i++) {
      for(let j = 0; j < n; j++) {
 
@@ -305,7 +183,7 @@ function loadScene() {
       else {
         acc = vec3.fromValues(0,0,0);
       }
-      //acc = vec3.fromValues(0.0,0.0,1.0);
+
       vec3.normalize(acc, acc);
       vec3.scale(acc, acc, 1/1000);
 
@@ -314,22 +192,10 @@ function loadScene() {
 
       let currTime : number = time;
 
-      //console.log(pos);
-      //console.log(col);
 
       let newParticle : Particle = new Particle(pos, vel, acc, col, currTime);
 
       particlesArray.push(newParticle);
-       /*
-       offsetsArray.push(i);
-       offsetsArray.push(j);
-       offsetsArray.push(0);
-
-       colorsArray.push(i / n);
-       colorsArray.push(j / n);
-       co///lorsArray.push(1.0);
-       colorsArray.push(1.0); // Alpha channel
-       */
      }
    }
 }
@@ -358,8 +224,6 @@ function main() {
   gui.add(controls, 'mesh', ['wahoo', 'moobeast', 'cube']);
   gui.add(controls, 'cameraControls');
 
-  //gui.add(controls, 'resetVelocities');
-
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
   const gl = <WebGL2RenderingContext> canvas.getContext('webgl2');
@@ -373,8 +237,6 @@ function main() {
   // Initial call to load scene
   loadScene();
 
-  //const camera = new Camera(vec3.fromValues(50, 50, 10), vec3.fromValues(50, 50, 0));
-  // How to make camera further back??
   const camera = new Camera(vec3.fromValues(0, 0, 120), vec3.fromValues(0, 0, 0));
   cam = camera;
 
@@ -410,9 +272,6 @@ function main() {
       mesh = cube;
       break;
     }
-    //mesh.create();
-
-
 
    // Instead, render particles every tick (so we can affect velocity)
    let offsetsArray = [];
@@ -421,14 +280,8 @@ function main() {
      
      let currParticle = particlesArray[i];
 
-     
-     //console.log(disperse);
-
      // Either disperse or freeze particles
      if(controls.disperse) {
-
-      //currParticle.changeAcc(vec3.fromValues(0,0,0));
-      //currParticle.vel = vec3.create();
 
       currParticle.acc = vec3.fromValues(Math.random() - .5,Math.random() - .5,Math.random() - .5);
       vec3.normalize(currParticle.acc, currParticle.acc);
@@ -441,9 +294,6 @@ function main() {
       currParticle.acc = vec3.fromValues(Math.random() - .5,Math.random() - .5,Math.random() - .5);
       vec3.normalize(currParticle.acc, currParticle.acc);
       vec3.scale(currParticle.acc, currParticle.acc, 1/100);
-
-      //vec3.normalize(currParticle.acc, currParticle.acc);
-      //vec3.scale(currParticle.acc, currParticle.acc, 1/1000);
      }
 
      // Bring particles to origin
@@ -456,7 +306,6 @@ function main() {
 
        vec3.subtract(originVec, originVec, attractionPoint);
 
-       //vec3.scale(originVec, originVec, -1);
        // If not repelling particles, pull them in
        if(!controls.repel) {
          vec3.scale(originVec, originVec, -1);
@@ -472,56 +321,12 @@ function main() {
        let dist : number = vec3.length(diff);
 
        if(!controls.oscillate && (dist < epsilon)) {
-         //console.log('Yeet');
          currParticle.vel = vec3.scale(currParticle.vel, currParticle.vel, 1/10);
-         //currParticle.changeVel(vec3.create());
          currParticle.changeAcc(vec3.fromValues(Math.random() - .5, Math.random() - .5, Math.random() - .5));
          vec3.scale(currParticle.acc, currParticle.acc, 1/100);
-         //currParticle.changeAcc(vec3.create());
-         //currParticle.changePos(attractionPoint);
          vec3.normalize(currParticle.acc, currParticle.acc);
        }
-       //if()
      }
-
-     /*
-     if(controls.attractToMesh) {
-       currParticle.changeAcc(vec3.create()); //?
-       // If attracting to mesh, pull particles to each vertex, stopping them 
-       // once near enough to a vertex position
-       // May need to reset all forces?
-       // Need all vertex positions
-       // Add a attracting force from each mesh position to the particle pos
-       for(let j : number = 0; j < mesh.positions.length; j = j + 4) {
-         let p0 = mesh.positions[j];
-         let p1 = mesh.positions[j + 1];
-         let p2 = mesh.positions[j + 2];
-         let p3 = mesh.positions[j + 3];
-
-         let meshPos : vec3 = vec3.fromValues(p0, p1, p2);
-
-         /*
-         let attractVec : vec3 = vec3.create();
-         vec3.subtract(attractVec, currParticle.pos, meshPos);
-         vec3.scale(attractVec, attractVec, -1);
-         vec3.normalize(attractVec, attractVec);
-         vec3.scale(attractVec, attractVec, 1/100);
-
-        let epsilon : number = 3.0;
-        let diff : vec3 = vec3.create();
-        vec3.subtract(diff, currParticle.pos, meshPos);
-        let dist : number = vec3.length(diff);
-        if(dist < epsilon) {
-          // Halt particles
-         currParticle.vel = vec3.scale(currParticle.vel, currParticle.vel, 1/10);
-         currParticle.changeAcc(vec3.fromValues(Math.random() - .5, Math.random() - .5, Math.random() - .5));
-         vec3.scale(currParticle.acc, currParticle.acc, 1/100);
-         vec3.normalize(currParticle.acc, currParticle.acc);
-         
-        }
-       }
-       controls.attractToMesh = false;
-     }*/
 
      // Finally, update positions
      currParticle.update(time);
@@ -531,35 +336,17 @@ function main() {
      offsetsArray.push(pos[1]);
      offsetsArray.push(pos[2]);
 
-     //console.log(pos);
-
      let col : vec4 = currParticle.col;
      colorsArray.push(col[0]);
      colorsArray.push(col[1]);
      colorsArray.push(col[2]);
      colorsArray.push(col[3]);
-
-     //console.log(col);
    }
-   /*
-   let n: number = 100.0;
-   for(let i = 0; i < n; i++) {
-     for(let j = 0; j < n; j++) {
-       offsetsArray.push(i);
-       offsetsArray.push(j);
-       offsetsArray.push(0);
-
-       colorsArray.push(i / n);
-       colorsArray.push(j / n);
-       colorsArray.push(1.0);
-       colorsArray.push(1.0); // Alpha channel
-     }
-   }
-   */
+  
    let offsets: Float32Array = new Float32Array(offsetsArray);
    let colors: Float32Array = new Float32Array(colorsArray);
    square.setInstanceVBOs(offsets, colors);
-   square.setNumInstances(n * n); // 10x10 grid of "particles"
+   square.setNumInstances(n * n); // n x n grid of "particles"
 
    // Regular tick functions
 
