@@ -5,7 +5,7 @@
 ## READ-ME
 Pennkey: nmaga
 
-Live demo:
+Live demo: https://nmagarino.github.io/homework-6-particle-system-nmagarino/
 
 Resources:
 * "https://cis700-procedural-graphics.github.io/files/dynamics_2_28_17.pdf" - For reference in Euler integration for particle physics
